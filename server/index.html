@@ -1,0 +1,59 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var entry_add = function (client, sensor, entry) {
+    var tr = document.createElement('tr');
+    if (entry[2]) {
+      tr.setAttribute('data-change', '');
+    }
+    tr.innerHTML = '<td>' + entry[0] + '</td><td>' + entry[1] + '</td>';
+    document.querySelector('table[data-client="' + client + '"][data-sensor="' + sensor + '"] tbody').prepend(tr);
+  };
+  var socket = io();
+  socket.on('connect', function () {
+    socket.on('request', function ([event, data]) {
+      if (event === 'data') {
+        var html = '';
+        Object.keys(data).forEach(function (client) {
+          data[client].forEach(function (sensor) {
+            html += '<div>' + client + ' (' + sensor.id + ')';
+            html += '<table data-client="' + client + '" data-sensor="' + sensor.id + '"></thead>';
+            html += '<tbody></tbody></table>';
+            html += '</div>';
+          });
+        })
+        document.getElementById('c').innerHTML = html;
+        Object.keys(data).forEach(function (client) {
+          data[client].forEach(function (sensor) {
+            sensor.t.reverse().forEach(function (entry) {
+              entry_add(client, sensor.id, entry);
+            })
+          });
+        });
+      } else if (event === 'append') {
+        data.append.forEach(function (row) {
+          entry_add(row.client, row.id, row.entry);
+        })
+      }
+    });
+  });
+</script>
+<div id='c'></div>
+<style>
+  #c{
+    display: flex;
+  }
+  #c div {
+    margin: 0.5em;
+  }
+  table{
+    border-collapse: collapse;
+  }
+  table td {
+    border: 1px solid #aaa;
+  }
+  table tr:nth-child(1) td:nth-child(1) {
+    font-size: 3em;
+  }
+  tr[data-change] td:nth-child(2) {
+    font-weight: bold;
+  }
