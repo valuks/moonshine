@@ -1,8 +1,7 @@
-var request = require('request');
-var sensor = require('ds18b20-raspi');
+request = require('request')
+sensor = require('ds18b20-raspi')
 
-var server = 'http://192.168.1.3:3009';
+server = 'http://moonshine.sata.lv'
 
-request.post(server + '/save', {json: {client: 'moonshine', sensors: sensor.readAllC() } }, function () {
-   process.exit();
-});
+request.post server + '/save', {json: {client: 'moonshine', sensors: sensor.readAllC() } }, =>
+  process.exit()

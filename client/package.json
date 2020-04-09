@@ -1,0 +1,8 @@
+{
+  "name": "moonshine client",
+  "dependencies": {
+    "ds18b20-raspi": "^0.3.4",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {}
+}
